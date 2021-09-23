@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## OCR: Captcha recognition using PyTorch
 
 ## Description
@@ -20,7 +19,4 @@ coding style.
 ## Reference
 
 1. https://github.com/abhishekkrthakur/captcha-recognition-pytorch
-=======
-# OCR-pt
-Captcha recognition using PyTorch
->>>>>>> origin/master
+
