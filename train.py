@@ -135,6 +135,7 @@ def run_training(opt):
                 s = ('%10s' + '%10.4g' + '%10s') % ('%g/%g' % (epoch + 1, opt.num_epochs), total_loss / (i + 1), mem)
                 progress_bar.set_description(s)
 
+
         valid_captcha_preds = []
         for vp in valid_preds:
             current_preds = decode_predictions(vp, lbl_enc)
@@ -144,6 +145,8 @@ def run_training(opt):
         test_dup_rem = [remove_duplicates(c) for c in test_targets_orig]
         accuracy = metrics.accuracy_score(test_dup_rem, valid_captcha_preds)
         scheduler.step(valid_loss)
+
+    torch.save(model.state_dict(), 'final.pth')
 
 
 if __name__ == "__main__":
