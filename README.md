@@ -5,10 +5,10 @@
 Implementation of RNN for Captcha recognition using PyTorch.
 
 <div align='center'>
-  <img src='assets/2b827.png' height="170px">
-  <img src='assets/2bg48.png' height="170px">
-  <img src='assets/2cegf.png' height="170px">
-  <img src='assets/2cg58.png' height="170px">
+  <img src='assets/2b827.png' height="50px">
+  <img src='assets/2bg48.png' height="50px">
+  <img src='assets/2cegf.png' height="50px">
+  <img src='assets/2cg58.png' height="50px">
 </div>
 
 ## Prerequisites
