@@ -11,7 +11,7 @@ from sklearn import preprocessing
 from sklearn import model_selection
 
 from utils.dataset import CaptchaDataset
-from nets.model import CaptchaModel
+from nets.nn import CaptchaModel
 
 
 def weights_init(m):
@@ -62,7 +62,7 @@ def decode_predictions(preds, encoder):
 
 def run_training(opt):
     image_files = glob.glob(os.path.join(opt.data, "*.png"))
-    targets_orig = [x.split("/")[-1][:-4] for x in image_files]
+    targets_orig = [x.split("\\")[-1][:-4] for x in image_files]
     targets = [[c for c in x] for x in targets_orig]
     targets_flat = [c for clist in targets for c in clist]
 
@@ -137,8 +137,14 @@ if __name__ == "__main__":
     parser.add_argument('--height', type=int, default=50, help='height of the input image')
     parser.add_argument('--width', type=int, default=200, help='width of the input image')
     parser.add_argument('--num_workers', type=int, default=0, help='number of workers in dataloader')
-    parser.add_argument('--num_epochs', type=int, default=600, help='number of epochs')
+    parser.add_argument('--num_epochs', type=int, default=300, help='number of epochs')
     parser.add_argument('--cuda', action='store_true', default=True, help='use cuda')
     opt = parser.parse_args()
 
     run_training(opt)
+
+
+
+
+
+

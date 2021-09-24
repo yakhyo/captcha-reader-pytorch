@@ -1,5 +1,5 @@
 import torch
-from nets.model import CaptchaModel
+from nets.nn import CaptchaModel
 from sklearn import preprocessing
 
 import argparse
@@ -30,7 +30,7 @@ def decode_predictions(preds, encoder):
     preds = torch.softmax(preds, 2)
     preds = torch.argmax(preds, 2)
     preds = preds.detach().cpu().numpy()
-    cap_preds = []
+    cap_preds = ''
     for j in range(preds.shape[0]):
         temp = []
         for k in preds[j, :]:
@@ -41,13 +41,13 @@ def decode_predictions(preds, encoder):
                 p = encoder.inverse_transform([k])[0]
                 temp.append(p)
         tp = "".join(temp).replace("§", "")
-        cap_preds.append(remove_duplicates(tp))
+        cap_preds += remove_duplicates(tp)
     return cap_preds
 
 
 def recognize(opt):
     image_files = glob.glob(os.path.join(opt.data, "*.png"))
-    targets_orig = [x.split("/")[-1][:-4] for x in image_files]
+    targets_orig = [x.split("\\")[-1][:-4] for x in image_files]
     targets = [[c for c in x] for x in targets_orig]
     targets_flat = [c for clist in targets for c in clist]
 
@@ -67,7 +67,6 @@ def recognize(opt):
     std = (0.229, 0.224, 0.225)
     transform = transforms.Compose([
         transforms.ToTensor(),
-        # transforms.Resize((opt.height, opt.width)),
         transforms.Normalize(mean, std, inplace=True)
     ])
 
@@ -83,7 +82,6 @@ def recognize(opt):
         model.eval()
         pred, _ = model(image)
         current_preds = decode_predictions(pred, lbl_enc)
-        print(current_preds)
         print(current_preds)
 
 
