@@ -1,6 +1,7 @@
 ## OCR: Captcha recognition using PyTorch
 
 ## Description
+**Trained weight is exist in `weights` folder**
 
 Implementation of RNN for Captcha recognition using PyTorch.
 
@@ -21,8 +22,8 @@ Implementation of RNN for Captcha recognition using PyTorch.
 ## Installation
 
 ```
-git clone ...
-curl clone https://github.com/yakhyo/Captcha-Reader-Keras/blob/master/captcha_images_v2.zip
+git clone https://github.com/yakhyo/OCR-pt.git
+curl https://github.com/yakhyo/Captcha-Reader-Keras/blob/master/captcha_images_v2.zip
 ```
 
 **Data**
