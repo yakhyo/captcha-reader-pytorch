@@ -1,18 +1,17 @@
 import os
 import glob
-import torch
+import tqdm
+import argparse
 import numpy as np
+
+import torch
+import torch.nn as nn
 
 from sklearn import preprocessing
 from sklearn import model_selection
-from sklearn import metrics
 
 from dataset import CaptchaDataset
 from model import CaptchaModel
-
-from torch import nn
-import argparse
-import tqdm
 
 
 def weights_init(m):
@@ -73,21 +72,13 @@ def run_training(opt):
     targets_enc = np.array(targets_enc)
     targets_enc = targets_enc + 1
 
-    (
-        train_imgs,
-        test_imgs,
-        train_targets,
-        test_targets,
-        _,
-        test_targets_orig,
-    ) = model_selection.train_test_split(
-        image_files, targets_enc, targets_orig, test_size=0.1, random_state=42
-    )
+    X_train, X_test, y_train, y_test, _, y_test_orig = model_selection.train_test_split(
+        image_files, targets_enc, targets_orig, test_size=0.1, random_state=42)
 
-    train_dataset = CaptchaDataset(image_paths=train_imgs, targets=train_targets, resize=(opt.height, opt.width))
+    train_dataset = CaptchaDataset(image_paths=X_train, targets=y_train, resize=(opt.height, opt.width))
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=opt.batch_size, num_workers=opt.num_workers,
                                                shuffle=True)
-    test_dataset = CaptchaDataset(image_paths=test_imgs, targets=test_targets, resize=(opt.height, opt.width))
+    test_dataset = CaptchaDataset(image_paths=X_test, targets=y_test, resize=(opt.height, opt.width))
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=opt.batch_size // 2, num_workers=opt.num_workers,
                                               shuffle=False)
 
@@ -99,9 +90,7 @@ def run_training(opt):
         model.to(device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, factor=0.8, patience=5, verbose=True
-    )
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.8, patience=5, verbose=True)
     for epoch in range(opt.num_epochs):
         model.train()
         total_loss = 0
@@ -115,6 +104,7 @@ def run_training(opt):
             loss.backward()
             optimizer.step()
             total_loss += loss.detach().cpu().item()
+
             mem = '%.3gG' % (torch.cuda.memory_reserved() / 1E9 if torch.cuda.is_available() else 0)
             s = ('%10s' + '%10.4g' + '%10s') % ('%g/%g' % (epoch + 1, opt.num_epochs), total_loss / (i + 1), mem)
             progress_bar.set_description(s)
@@ -122,28 +112,19 @@ def run_training(opt):
         with torch.no_grad():
             model.eval()
             valid_loss = 0
-            valid_preds = []
             print(('\n' + '%10s' * 3) % ('epoch', 'loss', 'gpu'))
             progress_bar = tqdm.tqdm(enumerate(test_loader), total=len(test_loader))
+
             for i, (images, targets) in progress_bar:
                 images = images.to(device)
                 targets = targets.to(device)
                 batch_preds, loss = model(images, targets)
                 valid_loss += loss.detach().cpu().item()
-                valid_preds.append(batch_preds)
+
                 mem = '%.3gG' % (torch.cuda.memory_reserved() / 1E9 if torch.cuda.is_available() else 0)
                 s = ('%10s' + '%10.4g' + '%10s') % ('%g/%g' % (epoch + 1, opt.num_epochs), total_loss / (i + 1), mem)
                 progress_bar.set_description(s)
 
-
-        valid_captcha_preds = []
-        for vp in valid_preds:
-            current_preds = decode_predictions(vp, lbl_enc)
-            valid_captcha_preds.extend(current_preds)
-        # combined = list(zip(test_targets_orig, valid_captcha_preds))
-        # # print(combined[:10])
-        test_dup_rem = [remove_duplicates(c) for c in test_targets_orig]
-        accuracy = metrics.accuracy_score(test_dup_rem, valid_captcha_preds)
         scheduler.step(valid_loss)
 
     torch.save(model.state_dict(), 'final.pth')
@@ -156,7 +137,7 @@ if __name__ == "__main__":
     parser.add_argument('--height', type=int, default=50, help='height of the input image')
     parser.add_argument('--width', type=int, default=200, help='width of the input image')
     parser.add_argument('--num_workers', type=int, default=0, help='number of workers in dataloader')
-    parser.add_argument('--num_epochs', type=int, default=50, help='number of epochs')
+    parser.add_argument('--num_epochs', type=int, default=600, help='number of epochs')
     parser.add_argument('--cuda', action='store_true', default=True, help='use cuda')
     opt = parser.parse_args()
 

@@ -1,7 +1,6 @@
-import albumentations
+import numpy as np
 import torch
 from torchvision import transforms
-import numpy as np
 
 from PIL import Image
 from PIL import ImageFile
@@ -35,6 +34,7 @@ class CaptchaDataset:
                 (self.resize[1], self.resize[0]), resample=Image.BILINEAR
             )
 
+        image = np.array(image)
         image = self.transform(image)
 
         return image, torch.Tensor(target)
