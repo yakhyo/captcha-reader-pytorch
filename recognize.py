@@ -1,6 +1,5 @@
 import torch
-from model import CaptchaModel
-from dataset import CaptchaDataset
+from nets.model import CaptchaModel
 from sklearn import preprocessing
 
 import argparse

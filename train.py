@@ -10,8 +10,8 @@ import torch.nn as nn
 from sklearn import preprocessing
 from sklearn import model_selection
 
-from dataset import CaptchaDataset
-from model import CaptchaModel
+from utils.dataset import CaptchaDataset
+from nets.model import CaptchaModel
 
 
 def weights_init(m):
