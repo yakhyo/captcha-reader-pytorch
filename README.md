@@ -1,4 +1,4 @@
-## OCR: Captcha recognition using PyTorch
+## Captcha recognition using PyTorch
 
 ## Description
 **Trained weight is exist in `weights` folder**
