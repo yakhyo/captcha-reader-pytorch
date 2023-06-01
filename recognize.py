@@ -2,11 +2,11 @@ import os
 import glob
 import argparse
 import numpy as np
-import PIL.Image as Image
+from PIL import Image
 from sklearn import preprocessing
 
 import torch
-import torchvision.transforms as transforms
+from torchvision import transforms
 
 from nets.nn import CaptchaModel
 from utils.util import decode_predictions
