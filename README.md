@@ -22,16 +22,16 @@ Implementation of RNN for Captcha recognition using PyTorch.
 ## Installation
 
 ```
-git clone https://github.com/yakhyo/OCR-pt.git
-curl https://github.com/yakhyo/Captcha-Reader-Keras/blob/master/captcha_images_v2.zip
+git clone https://github.com/yakhyo/captcha-reader-pytorch
+curl https://github.com/yakhyo/captcha-reader-keras/blob/master/captcha_images_v2.zip
 ```
 
 **Data**
 
 ```
-Data: https://github.com/yakhyo/Captcha-Reader-Keras/blob/master/captcha_images_v2.zip
+Data: https://github.com/yakhyo/captcha-reader-keras/blob/master/captcha_images_v2.zip
 
-├── OCR-pt
+├── captcha-reader-pytorch
 │   ├── assets
 │   ├── nets
 │   ├── utils
