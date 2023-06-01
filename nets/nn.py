@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 class CaptchaModel(nn.Module):
-    def __init__(self, num_chars):
+    def __init__(self, num_chars: int) -> None:
         super(CaptchaModel, self).__init__()
         self.layer1 = nn.Sequential(
             nn.Conv2d(3, 32, kernel_size=(3, 3), padding=(1, 1)),
@@ -27,7 +27,7 @@ class CaptchaModel(nn.Module):
 
         self.layer5 = nn.Linear(64, num_chars + 1)
 
-    def forward(self, images, targets=None):
+    def forward(self, images: torch.Tensor, targets=None):
         batch_size, _, _, _ = images.size()
         out = self.layer1(images)
         out = self.layer2(out)
